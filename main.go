@@ -270,4 +270,10 @@ func main() {
     fmt.Printf("Number %d is %t\n", unHappyNumber, leetcode.IsHappy(unHappyNumber))
     fmt.Printf("Number %d is %t\n", randNumber, leetcode.IsHappy(randNumber))
 
+    // 58. Length of Last Word
+    var strTest58 string = "Hello World"
+    var strTest581 string = "   fly me   to   the moon  "
+    fmt.Printf("Last world length in str: %s is %d\n", strTest58, leetcode.LengthOfLastWord(strTest58))
+    fmt.Printf("Last world length in str: %s is %d\n", strTest581, leetcode.LengthOfLastWord(strTest581))
+
 }

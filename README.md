@@ -11,6 +11,7 @@ LeetCode problems solving for education:
 9 Palindrome Number\
 14 Longest Common Prefix\
 20 Valid Parentheses - not working, some problems\
+58 Length of Last Word\
 202 Happy Number\
 
 

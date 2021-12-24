@@ -6,6 +6,7 @@ import (
     "math"
     "sort"
     "strconv"
+    "strings"
 )
 
 func TwoSum(nums []int, target int) []int {
@@ -171,4 +172,12 @@ func IsValidParentheses(s string) bool {
     } else {
         return false
     }
+}
+
+// 58. Length of Last Word
+func LengthOfLastWord(s string) int {
+    s1 := strings.Trim(s, " ")
+    s1Slices := strings.Split(s1, " ")
+    res := len(s1Slices[len(s1Slices)-1])
+    return res
 }
