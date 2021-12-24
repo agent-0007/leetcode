@@ -3,6 +3,7 @@ package leetcode
 import (
     "bytes"
     "fmt"
+    "math"
     "sort"
     "strconv"
 )
@@ -86,5 +87,88 @@ func LongestCommonPrefix(strs []string) string {
     return result.String()
 }
 
-// 20. Valid Parentheses
+// 202. Happy Number
+func IsHappyCompute(n int) int {
+    var res int = 0
+    nString := strconv.Itoa(n)
+    for _, v := range nString {
+        //fmt.Println("===>",string(v))
+        num, _ := strconv.Atoi(string(v))
+        res = res + int(math.Pow(float64(num), 2))
+        //fmt.Printf("res = %d\n", res)
+    }
+    //fmt.Printf("res = %d\n", res)
+    return res
+}
+func IsHappy(n int) bool {
+    if n < 0 {
+        return false
+    }
 
+    m := IsHappyCompute(n)
+    for {
+        m = IsHappyCompute(m)
+        //fmt.Printf("m = %d\n", m)
+        if m < 10 {
+            break
+        }
+    }
+
+    if m == 1 {
+        return true
+    }
+
+    return false
+}
+
+// 20. Valid Parentheses
+// Implementing stack on Go
+//var stack []string
+//
+//stack = append(stack, "world!") // Push
+//stack = append(stack, "Hello ")
+//
+//for len(stack) > 0 {for
+//n := len(stack) - 1 // Верхний элемент
+//fmt.Print(stack[n])
+//
+//stack = stack[:n] // Pop
+//}
+func IsValidParentheses(s string) bool {
+    length := len(s)
+    parenthesis := map[rune]rune{
+       '[': ']',
+       '(': ')',
+       '{': '}',
+    }
+
+    if length % 2 != 0 {
+        return false
+    }
+    arr := []rune(s)
+    var stack []rune
+
+    for i, v := range arr {
+        n := len(stack) - 1
+        if n >= 0 && v == stack[n] {
+            stack = stack[:n]
+            continue
+        }
+
+       if parenthesisClose, found := parenthesis[v]; found {
+           if i != len(arr)-1 && arr[i+1] != parenthesisClose {
+               stack = append(stack, parenthesisClose)
+           }
+       }
+
+    }
+
+    fmt.Println(arr)
+    fmt.Println(stack)
+
+    if len(stack) == 0 {
+        return true
+    } else {
+        return false
+    }
+}

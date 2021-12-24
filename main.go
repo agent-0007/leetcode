@@ -6,6 +6,10 @@ import (
     "gobook/hashmaps"
     "gobook/leetcode"
     "gobook/structs"
+    "math/rand"
+    "time"
+
+    // "math/rand"
 )
 
 func array_test() {
@@ -152,7 +156,27 @@ func test(x int) bool {
     }
     return false
 }
+
+/*
+    Задачка на джуна с подъебинго, в слайс кладется указатели на переменную item
+    по выходу с цикла items = 5
+    поэтому вывод значений будет 5,5,5,5,5
+    все положенные ссылки будут вести на одно и то же значение
+ */
+func avitoTest() {
+    numbers := []int{1, 2, 3, 4, 5}
+    var a []*int
+    for _, item := range numbers {
+        a = append(a, &item)
+    }
+    for _, item := range a {
+        fmt.Println(*item)
+    }
+}
+
+
 func main() {
+
     array_test()
     slices()
     non_bool_value_in_if()
@@ -218,5 +242,32 @@ func main() {
     strArray := []string{"flower","flow","flight"}
     fmt.Printf("Longest prefix is => %s", leetcode.LongestCommonPrefix(strArray))
     strArray2 := []string{"flower","flow","aaaflight"}
-    fmt.Printf("Longest prefix is => %s", leetcode.LongestCommonPrefix(strArray2))
+    fmt.Printf("Longest prefix is => %s\n", leetcode.LongestCommonPrefix(strArray2))
+
+    // 20. Valid Parentheses
+    // TODO: Not works ;(
+    parenthesesStr := "{[{}]}"
+    parenthesesStrNotCorrect := "{[{}]}}}}}"
+    parenthesesStr2 := "()()"
+    parenthesesStr3 := "()[]{}"
+    fmt.Println("-----------------------")
+    leetcode.IsValidParentheses(parenthesesStr)
+    fmt.Printf("Valid Parentheses at string: %s is %t\n", parenthesesStr, leetcode.IsValidParentheses(parenthesesStr))
+    fmt.Printf("Valid Parentheses at string: %s is %t\n", parenthesesStrNotCorrect, leetcode.IsValidParentheses(parenthesesStrNotCorrect))
+    fmt.Printf("Valid Parentheses at string: %s is %t\n", parenthesesStr2, leetcode.IsValidParentheses(parenthesesStr2))
+    fmt.Printf("Valid Parentheses at string: %s is %t\n", parenthesesStr3, leetcode.IsValidParentheses(parenthesesStr3))
+
+    // 202. Happy Number
+    happyNumber := 19
+    unHappyNumber := 2
+    maxR := 1000
+    minR := 100
+    // seed rnd
+    rand.Seed(time.Now().UnixNano())
+    randNumber := rand.Intn(maxR - minR) + minR
+    fmt.Println("Happy Number =======>")
+    fmt.Printf("Number %d is %t\n", happyNumber, leetcode.IsHappy(happyNumber))
+    fmt.Printf("Number %d is %t\n", unHappyNumber, leetcode.IsHappy(unHappyNumber))
+    fmt.Printf("Number %d is %t\n", randNumber, leetcode.IsHappy(randNumber))
+
 }
