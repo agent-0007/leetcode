@@ -26,4 +26,184 @@ func main() {
   }
 }
 
-Что выведет? не используйте только среду иначе неинтересно
+Q: Что выведет? не используйте только среду иначе неинтересно
+A: 5,5,5,5,5
+
+Test4:
+func f() (i int, s string) {
+    i = 17
+    s = "abc"
+    return
+}
+Q: что вернет функция?
+A: 17, abc
+
+Test 5:
+1. Switch с повторяющимися cases
+В golang операторы switch не требуют постановки break или return после каждого case. В случае с несколькими case, которые в C# последовательно обрабатываются один за другим, в golang обрабатывается только последний case:
+
+package main
+
+import (
+ "fmt"
+)
+
+type Weekday string
+
+const (
+ Sunday    Weekday = "Sunday"
+ Monday    Weekday = "Monday"
+ Tuesday   Weekday = "Tuesday"
+ Wednesday Weekday = "Wednesday"
+ Thursday  Weekday = "Thursday"
+ Friday    Weekday = "Friday"
+ Saturday  Weekday = "Saturday"
+)
+
+func main() {
+ printIsWeekday(Sunday)
+ // выводит: воскресенье - выходной
+ printIsWeekday(Monday)
+ // выводит:
+ printIsWeekday(Tuesday)
+ // выводит:
+ printIsWeekday(Wednesday)
+ // выводит:
+ printIsWeekday(Thursday)
+ // выводит:
+ printIsWeekday(Friday)
+ // выводит: пятница - будний день
+ printIsWeekday(Saturday)
+ // выводит:
+}
+
+func printIsWeekday(day Weekday) {
+ switch day {
+ case Monday:
+ case Tuesday:
+ case Wednesday:
+ case Thursday:
+ case Friday:
+ fmt.Printf("%s is a weekday\n", day)
+
+ case Saturday:
+ case Sunday:
+ fmt.Printf("%s is a weekend day\n", day)
+ }
+}
+Чтобы обрабатывались все, в golang разные варианты для каждого case разделяются запятыми:
+
+func printIsWeekday(day Weekday) {
+ switch day {
+ case Monday, Tuesday, Wednesday, Thursday, Friday:
+ fmt.Printf("%s is a weekday\n", day)
+
+ case Saturday, Sunday:
+ fmt.Printf("%s is a weekend day\n", day)
+ }
+}
+
+Test 6:
+2. int != int32
+В C# int — это псевдоним для System.Int32. Они нередко используются взаимозаменяемо.
+А в Golang это совершенно разные типы, и поэтому вот этот код не будет компилироваться:
+
+package main
+
+import "fmt"
+
+func main() {
+ var (
+ number1 int   = 5
+ number2 int32 = 5
+ )
+
+ if number1 == number2 {
+ fmt.Println("number1 and number2 are equal")
+ }
+}
+В Golang тип int может меняться в зависимости от компьютера, на котором он запускается:
+
+Типы int, uint и uintptr имеют размер, как правило, 32 бита для 32-битных платформ и 64 бита для 64-битных.
+Когда требуется целочисленное значение, применяется int, если нет конкретной причины использовать целочисленный тип с указанием размера или без знака.
+
+Test 7:
+3. Операторы if могут переопределять смысловое значение переменных
+Используя оператор := в конструкции с if, мы создаём новые временные переменные, игнорируя переменные с одинаковым именем, которые могут существовать в одном контексте. Ниже показано, что exists не будет true во второй конструкции с if.
+
+package main
+
+import "fmt"
+
+func main() {
+ var exists bool
+
+ if exists, err := fileExists("somefile"); err == nil {
+ if exists {
+ fmt.Println("inside the first if")
+ }
+ }
+
+ if exists {
+ fmt.Println("inside the second if")
+ // Не будет выведен
+ }
+}
+
+func fileExists(fileName string) (bool, error) {
+ return true, nil
+}
+Чтобы этого не допустить, надо использовать оператор =, то есть exists и err надо объявить заранее. А можно оставить оператор :=, переместив весь вызов fileExists вперёд до конструкции с if:
+
+func main() {
+ exists, err := fileExists("somefile")
+ if err == nil && exists {
+ fmt.Println("inside the first if")
+ }
+
+ if exists {
+ fmt.Println("inside the second if")
+ }
+}
+В официальной документации указано, что это — ожидаемое поведение:
+
+В отличие от обычных объявлений переменных, короткое объявление переменных может повторно объявлять переменные, если они первоначально были объявлены ранее в том же блоке…
+
+В некоторых контекстах, таких как инициализаторы для конструкций “if”, “for” или “switch”, они могут использоваться для объявления временных локальных переменных.
+
+Заметьте, что это не характерно для операторов if.
+
+
+Test 8:
+4. Перечисление совсем не как в C#
+В этом фрагменте кода схожих моментов меньше всего. Но в Golang реализация чего-то похожего на перечисление основывалась бы на новом type и нескольких константах вновь созданного type. Однако компилятор не будет делать такую реализацию (вопреки тому, что можно было бы ожидать при применении в golang подходов, используемых в C#):
+
+package main
+
+import (
+ "fmt"
+ "reflect"
+)
+
+type Weekday string
+
+const (
+ Sunday    Weekday = "Sunday"
+ Monday    Weekday = "Monday"
+ Tuesday   Weekday = "Tuesday"
+ Wednesday Weekday = "Wednesday"
+ Thursday  Weekday = "Thursday"
+ Friday    Weekday = "Friday"
+ Saturday  Weekday = "Saturday"
+)
+
+func main() {
+ print(Wednesday)
+ // выводит: Wednesday (main.Weekday)
+ print("я притворяюсь, что я будний день!")
+ // выводит: я притворяюсь, что я будний день(main.Weekday)
+}
+
+func print(day Weekday) {
+Как видим, здесь оператор type определяет день недели, имея в виду значение, а ассоциирует его с фактическим типом (в данном случае string). И без этих перечислений предельно ясно, что эти конкретные строки означают дни недели. Но компилятор не требует, чтобы print получал только объекты Weekday, вместо этого он концентрирует внимание на базовом типе.
+
